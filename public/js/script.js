@@ -83,9 +83,9 @@ class Product {
     }
 }
 
-let chocolate = new Product('Chocolate cookie', '4', 'chocolate'),
-    gingerbread = new Product('Gingerbread cookie', '3', 'gingerbread'),
-    oat = new Product('Oat cookie', '2', 'oat'),
+let chocolate = new Product('Chocolate_cookie', '4', 'chocolate'),
+    gingerbread = new Product('Gingerbread_cookie', '3', 'gingerbread'),
+    oat = new Product('Oat_cookie', '2', 'oat'),
     cart = [];
 
 // создаю карточку с продуктом

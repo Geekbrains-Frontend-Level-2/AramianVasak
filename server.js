@@ -3,12 +3,16 @@ const fs = require('fs');
 
 const server = http.createServer((req, res) => {
     const publicPath = './public';
-    console.log(req.url)
 
-    const body = req.url === 'js/script.js'
-    ? fs.readFileSync(`${publicPath}/js/script.js`)
-    : fs.readFileSync(`${publicPath}/index.html`, 'utf-8');
+    let body;
+    try {
+        body = fs.readFileSync(`${publicPath}${req.url}`);
+    } catch (err) {
+        body = fs.readFileSync(`${publicPath}/index.html`, 'utf8');
+    }
+
     res.end(body);
+
 })
 
 const port = process.env.PORT || 3000;
