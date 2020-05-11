@@ -5,8 +5,8 @@ const server = http.createServer((req, res) => {
     const publicPath = './public';
     console.log(req.url)
 
-    const body = req.url === '/styles/styles.css'
-    ? fs.readFileSync(`${publicPath}/styles/styles.css`, 'utf-8')
+    const body = req.url === 'js/script.js'
+    ? fs.readFileSync(`${publicPath}/js/script.js`)
     : fs.readFileSync(`${publicPath}/index.html`, 'utf-8');
     res.end(body);
 })
