@@ -1,0 +1,141 @@
+@mixin card($direction, $justify, $align, $width-min, $width-max) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
+    min-width: $width-min;
+    max-width: $width-max;
+    padding: 24px;
+    font-size: 24px;
+    font-weight: 500;
+    background: #fff;
+    border-radius: 5px;
+    box-sizing: border-box;
+    box-shadow: 0 0 0 1px #3f3f440d, 0 1px 3px 0 #3f3f4426;
+
+    &:hover {
+        box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+            0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    }
+}
+
+body {
+    font-family: Roboto, sans-serif;
+    background: #f4f6f8;
+    display: flex;
+}
+
+.content-wrp {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    min-width: auto;
+    max-width: 100%;
+
+    &-title {
+        margin: 0 0 24px 0;
+        text-align: center;
+    }
+}
+
+.content {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    margin: 0 0 48px 0;
+
+    &-card {
+        @include card(column, center, center, auto, none);
+        &:not(:first-child) {
+            margin: 0 0 0 24px;
+        }
+
+        &-title {
+            display: flex;
+            justify-content: center;
+        }
+
+        &-img {
+            max-width: 250px;
+            max-height: 250px;
+            margin: 16px 0 0 0;
+        }
+
+        &-price {
+            margin-left: 12px;
+            padding: 0 12px;
+            border: 1px solid #bf360c;
+            color: #bf360c;
+            border-radius: 3px;
+        }
+
+        &-btn {
+            margin: 16px 0 0 0;
+            width: 100%;
+            padding: 8px 16px;
+            font-size: 18px;
+            font-family: Roboto, sans-serif;
+            color: #fff;
+            border: none;
+            outline: none;
+            border-radius: 4px;
+            user-select: none;
+            background: #212121;
+            cursor: pointer;
+
+            &:hover {
+                background: #424242;
+                box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+                    0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+            }
+
+            &:active {
+                color: black;
+                background: white;
+            }
+        }
+    }
+}
+
+.cart {
+    flex-wrap: wrap;
+    @include card(column, space-between, normal, auto, 100%);
+
+    &-title {
+        margin: 0 0 16px 0;
+        border-bottom: 1px solid #ccc;
+    }
+
+    &-item {
+        display: flex;
+        justify-content: space-between;
+        min-width: 100%;
+
+        &:not(:first-child) {
+            margin: 8px 0 0 0;
+        }
+
+        &-name {
+            min-width: 70%;
+            text-align: left;
+        }
+
+        &-amount {
+            min-width: 15%;
+            text-align: right;
+        }
+
+        &-totalPrice {
+            min-width: 15%;
+            text-align: right;
+        }
+    }
+
+    &-totalPrice {
+        text-align: right;
+        margin: 16px 0 0 0;
+    }
+}
