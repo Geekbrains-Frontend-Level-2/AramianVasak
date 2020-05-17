@@ -6,7 +6,7 @@ document.body.innerHTML = `
 const main = document.querySelector("main");
 
 /**
- * Смысла в создании класса рендера для дальнейшего наследования не вижу, т.к. нельзя применить 
+ * Смысла в создании класса рендера для дальнейшего наследования не вижу, т.к. нельзя применить
  * логику, как с животными: "Любой item является render, но не любой render является item".
  * @param {object} child DOM element, append to root as child
  * @param {object} root DOM parent element for child. If not set, function will create div.
@@ -69,9 +69,9 @@ class ItemsList {
 }
 
 let array = [
-  {name: "Chocolate cookie", price: 4, img: "123.png"},
-  {name: "Gingerbread cookie", price: 3, img: "gingerbread.png"},
-  {name: "Oat cookie", price: 2, img: "oat.jpg"},
-]
+  { name: "Chocolate cookie", price: 4, img: "chocolate.jpg" },
+  { name: "Gingerbread cookie", price: 3, img: "gingerbread.jpg" },
+  { name: "Oat cookie", price: 2, img: "oat.jpg" },
+];
 
-const cookies = new ItemsList(array)
+const cookies = new ItemsList(array);
