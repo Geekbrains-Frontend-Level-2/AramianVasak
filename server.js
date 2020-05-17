@@ -4,8 +4,6 @@ const fs = require('fs');
 const server = http.createServer((req, res) => {
     const publicPath = './public';
 
-    /* Данный способ решения подсмотрел.
-    К сожалению, у меня не получилось ничего лучше, кроме огромной конструкции if :( */
     let body;
     try {
         body = fs.readFileSync(`${publicPath}${req.url}`);
