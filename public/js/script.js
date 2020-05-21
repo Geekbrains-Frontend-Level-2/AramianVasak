@@ -74,11 +74,11 @@ class ItemsList {
    */
   constructor() {
     this._arr;
-    this.createItems();
+    this.fetchItems();
   }
 
-  createItems() {
-    fetch("http://localhost:3000/data/items.json")
+  fetchItems() {
+    fetch("https://js-av.herokuapp.com/data/items.json")
       .then((res) => {
         return res.json();
       })
