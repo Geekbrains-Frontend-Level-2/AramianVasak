@@ -78,7 +78,7 @@ class ItemsList {
   }
 
   fetchItems() {
-    fetch("https://js-av.herokuapp.com/data/items.json" || "http://localhost:3000/data/items.json")
+    fetch("https://js-av.herokuapp.com/data/items.json")
       .then((res) => {
         return res.json();
       })
