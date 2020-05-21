@@ -30,12 +30,13 @@ body {
 }
 
 header {
-  display: block;
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
   margin: 24px;
 }
 
 .cart-btn {
-  margin: 16px;
   width: 50px;
   height: 50px;
   padding: 8px;
@@ -72,6 +73,12 @@ header {
 .cart-modal {
   flex-wrap: wrap;
   @include card(column, space-between, normal, auto, 100%);
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 58px;
+  z-index: 1;
+  width: 600px;
 
   &-sum {
     display: none;
@@ -103,36 +110,14 @@ header {
       justify-content: space-between;
     }
   }
+}
 
-  &-item {
-    display: flex;
-    justify-content: space-between;
-    width: 300px;
+.show {
+  display: block;
+}
 
-    &:not(:first-child) {
-      margin: 8px 0 0 0;
-    }
-
-    &-name {
-      min-width: 70%;
-      text-align: left;
-    }
-
-    &-amount {
-      min-width: 15%;
-      text-align: right;
-    }
-
-    &-totalPrice {
-      min-width: 15%;
-      text-align: right;
-    }
-  }
-
-  &-totalPrice {
-    text-align: right;
-    margin: 16px 0 0 0;
-  }
+.hide {
+  display: none;
 }
 
 main {
@@ -155,18 +140,18 @@ main {
     justify-content: center;
   }
 
-  &-img {
-    max-width: 250px;
-    max-height: 250px;
-    margin: 16px 0 0 0;
-  }
-
   &-price {
     margin-left: 12px;
     padding: 0 12px;
     border: 1px solid #bf360c;
     color: #bf360c;
     border-radius: 3px;
+  }
+
+  &-img {
+    max-width: 250px;
+    max-height: 250px;
+    margin: 16px 0 0 0;
   }
 
   &-btn {
