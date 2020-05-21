@@ -12,40 +12,38 @@ class Item {
    * @param {number} price
    * @param {string} img Path to image
    */
-  constructor(name, price, img) {
-    this._arr = productCart.itemsList;
+  constructor(name, price, img, id) {
     this._name = name;
     this._price = price;
     this._img = img;
+    this._id = id;
+    this._cart = productCart;
     this._template;
-    this._emptyCart = document.getElementsByClassName("cart-modal_empty")[0];
+
     this.getTemplate();
     this.render(main);
   }
 
   addToCart() {
     // this._arr.filter(item => item.id == )
-    this._arr.push(new CartItem(this._name, this._price, 1));
-    let cartSum = document.getElementsByClassName("cart-modal-sum")[0];
-    let parse = parseInt(cartSum.innerText);
-    cartSum.innerText = parse += this._price;
+    this._cart.add(this);
     this.emptyCart();
-    this.show(cartSum);
+    this.show();
   }
 
   // Скрываем общую стоимость
-  show(element) {
-    if (parseInt(element.innerText) > 0) {
-      element.classList.add("show");
+  show() {
+    if (this._cart._sum > 0) {
+      document.querySelector(".cart-modal-sum").classList.add("show");
     }
   }
 
   // Скрываем текст пустой корзины
   emptyCart() {
-    if (this._arr.length > 0) {
-      this._emptyCart.classList.add("hide");
+    if (this._cart._itemsList.length > 0) {
+      this._cart._emptyCart.classList.add("hide");
     } else {
-      this._emptyCart.classList.remove("hide");
+      this._cart._emptyCart.classList.remove("hide");
     }
   }
 
@@ -86,7 +84,7 @@ class ItemsList {
       })
       .then((res) => {
         this._arr = res.items.map((item) => {
-          return new Item(item.name, item.price, item.img);
+          return new Item(item.name, item.price, item.img, item.id);
         });
       });
   }
@@ -96,10 +94,11 @@ class Cart {
   constructor() {
     this._btnTemplate;
     this._modalTemplate;
-    this.itemsList = [];
+    this._itemsList = [];
     this._sum = 0;
     this.getBtnTemplate();
     this.getModalTemplate();
+    this._emptyCart = document.querySelector(".cart-modal_empty");
     this.render(document.querySelector("header"), this._btnTemplate);
   }
 
@@ -130,27 +129,41 @@ class Cart {
     this._modalTemplate.classList.toggle("show");
   }
 
-  add() {
-    this.itemsList
+  add(data) {
+    console.log(this._itemsList);
+    const duplicate = this._itemsList.filter((item) => item._id == data._id)[0];
+    duplicate ? duplicate.plusOne(true): console.log("uniqe");
+
+    return Promise.resolve(
+      this._itemsList.push(new CartItem(data))
+    ).then(() => {
+      this._sum += data._price;
+      this._modalTemplate.querySelector(
+        ".cart-modal-sum"
+      ).innerText = this._sum;
+    });
   }
 
-  render(root, child) {
+  render(root, child) { 
     return Promise.resolve(root.appendChild(child));
   }
 }
 
 class CartItem {
-  constructor(name, price, amount) {
-    this._name = name;
-    this._price = price;
-    this._amount = amount;
-    this._sum = price * amount;
+  constructor(data) {
+    this._id = data._id;
+    this._name = data._name;
+    this._price = data._price;
+    this._amount = 1;
+    this._sum = data._price * this._amount;
     this._template;
     this.getTemplate();
     this.render(document.querySelector("ul"));
   }
 
   plusOne(param) {
+    console.log('start');
+    
     param ? this._amount++ : this._amount--;
     let amount = document.getElementsByClassName("cart-item-amount")[0];
     let sum = document.getElementsByClassName("cart-item-sum")[0];
@@ -164,9 +177,9 @@ class CartItem {
     this._template.innerHTML = `
     <span class="cart-item-name">${this._name}</span>
     <span class="cart-item-price">${this._price}$</span>
+    <span class="cart-item-amount">x${this._amount}</span>
+    <span class="cart-item-sum">${this._sum}</span>
     `;
-    // <span class="cart-item-amount">x${this._amount}</span>
-    // <span class="cart-item-sum">${this._sum}</span>
   }
 
   render(root) {
