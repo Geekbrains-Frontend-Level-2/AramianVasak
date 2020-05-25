@@ -180,7 +180,7 @@ class ItemsList {
   }
 
   fetchData() {
-    fetch("http://localhost:3000/data/items.json")
+    fetch("./data/items.json")
       .then((res) => {
         return res.json();
       })
