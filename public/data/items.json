@@ -1,7 +1,7 @@
 {
   "items": [
-    { "name": "Chocolate cookie", "price": 4, "img": "chocolate.jpg", "id": 1 },
-    { "name": "Gingerbread cookie", "price": 3, "img": "gingerbread.jpg", "id": 2 },
-    { "name": "Oat cookie", "price": 2, "img": "oat.jpg", "id": 3 }
+    { "name": "Chocolate", "price": 4, "img": "chocolate.jpg", "id": 1 },
+    { "name": "Gingerbread", "price": 3, "img": "gingerbread.jpg", "id": 2 },
+    { "name": "Oat", "price": 2, "img": "oat.jpg", "id": 3 }
   ]
 }

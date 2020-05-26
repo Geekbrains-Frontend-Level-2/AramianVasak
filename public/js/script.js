@@ -1,19 +1,15 @@
 document.body.innerHTML = `
-<header class="header"></header>
-<main class="main"></main>
-<footer class="footer"></footer>
-`;
+<header class="header">
+<h1>Cookies shop</h1></header>
+<main class="main"></main>`;
 const HEADER = document.querySelector("header");
 const MAIN = document.querySelector("main");
-const FOOTER = document.querySelector("footer");
 
 class Renderer {
   constructor(root) {
     this._root = root;
     this._child;
   }
-
-  getTemplate() {}
 
   render() {
     this._root.appendChild(this._child);
@@ -32,17 +28,22 @@ class Item extends Renderer {
     this._cart.add(this._data);
   }
 
+  // шаблон карточки товара + кнопка с обработчиком addToCart
   getTemplate() {
     this._child = document.createElement("div");
     this._child.classList.add("item");
     this._child.innerHTML = `
+    <div class="item-header">
     <span class="item-title">${this._data.name}</span>
     <span class="item-price">${this._data.price}$</span>
+    </div>
     <img  class="item-img" src="img/${this._data.img}" alt="${this._data.name} image"/>
-    <button class="item-btn">ADD TO CART</button>`;
+    <button class="item-btn">ADD&nbsp;TO CART</button>`;
+
     this._child
       .querySelector(".item-btn")
       .addEventListener("click", this.addToCart.bind(this));
+
     this.render();
   }
 }
@@ -50,31 +51,55 @@ class Item extends Renderer {
 class CartItem extends Renderer {
   constructor(data, cart) {
     super();
-    this._root = cart._child.querySelector("ul");
+    this._root = cart._child.querySelector(".cart-items");
     this._data = data;
-    this._amount = 1;
     this._cart = cart;
+    this._amount = 1;
     this._totalPrice = data.price;
     this.getTemplate();
     this.render();
+    this.incCartSum();
   }
 
+  // увеличение общей стоимости в корзине
+  incCartSum() {
+    const cartSum = this._cart._child.querySelector(".cart-sum");
+    this._cart._sum += this._data.price;
+    cartSum.innerText = this._cart._sum + "$";
+    this._cart.ifEmptyCart();
+  }
+
+  // уменьшение общей стоимости в корзине
+  decCartSum() {
+    const cartSum = this._cart._child.querySelector(".cart-sum");
+    this._cart._sum -= this._data.price;
+    cartSum.innerText = this._cart._sum + "$";
+    this._cart.ifEmptyCart();
+  }
+
+  // увеличиваю кол-во товаров и стоимость позиции в корзине
   inc() {
-    this._cart._sum;
+    this.incCartSum();
+
     this._amount++;
     this._totalPrice = this._amount * this._data.price;
+
     this._child.querySelector(".cart-item-amount").innerText =
       "x" + this._amount;
     this._child.querySelector(".cart-item-sum").innerText =
       this._totalPrice + "$";
   }
 
+  // уменьшаю кол-во товаров и стоимость позиции в корзине
   dec() {
     if (this._amount == 1) {
-      return;
+      this.remove();
     } else {
+      this.decCartSum();
+
       this._amount--;
       this._totalPrice = this._amount * this._data.price;
+
       this._child.querySelector(".cart-item-amount").innerText =
         "x" + this._amount;
       this._child.querySelector(".cart-item-sum").innerText =
@@ -82,24 +107,47 @@ class CartItem extends Renderer {
     }
   }
 
+  // удаление позиции товара из корзины
   remove() {
-    this._cart._items.forEach((item) => {});
+    let indexOfItem;
+    for (let i = 0; i < this._cart._items.length; i++) {
+      if (this._data.id == this._cart._items[i]._data.id) {
+        indexOfItem = i;
+      }
+    }
+
+    this._cart._items.splice(indexOfItem, 1);
+    this._child.remove();
+
+    this._cart._sum -= this._totalPrice;
+
+    this._cart._child.querySelector(".cart-sum").innerText =
+      this._cart._sum + "$";
+    this._cart.ifEmptyCart();
   }
 
   getTemplate() {
     this._child = document.createElement("li");
     this._child.classList.add("cart-item");
+    this._child.setAttribute("id", this._data.id);
     this._child.innerHTML = `
     <span class="cart-item-name">${this._data.name}</span>
-    <span class="cart-item-price">${this._data.price}$</span>
+    <span class="item-price">${this._data.price}$</span>
+    <button class="cart-item-dec">-</button>
     <span class="cart-item-amount">x${this._amount}</span>
+    <button class="cart-item-inc">+</button>
     <span class="cart-item-sum">${this._totalPrice}$</span>
-    <button class="cart-item-dec">—</button>
     <button class="cart-item-remove">DELETE</button>
     `;
     this._child
       .querySelector(".cart-item-dec")
       .addEventListener("click", this.dec.bind(this));
+    this._child
+      .querySelector(".cart-item-inc")
+      .addEventListener("click", this.inc.bind(this));
+    this._child
+      .querySelector(".cart-item-remove")
+      .addEventListener("click", this.remove.bind(this));
   }
 }
 
@@ -107,43 +155,57 @@ class Cart extends Renderer {
   constructor(root) {
     super(root);
     this._items = [];
-    this._sum;
+    this._sum = 0;
     this.getTemplate();
   }
 
-  ifEmpty() {}
+  // отображаю или скрываю общую стоимость и текст пустой корзины
+  // вызывается при добавлении/удалении товаров в корзину
+  ifEmptyCart() {
+    const cartSum = this._child.querySelector(".cart-sum-wrp");
+    const cartEmpty = this._child.querySelector(".cart_empty");
 
+    if (this._sum == 0) {
+      cartSum.classList.remove("show");
+      cartEmpty.classList.add("show");
+    } else {
+      cartSum.classList.add("show");
+      cartEmpty.classList.remove("show");
+    }
+  }
+
+  // обрабатываю добавление товара в корзину
   add(data) {
     const duplicate = this._items.filter((item) => item._data.id === data.id);
 
     if (!duplicate[0]) {
-      return Promise.resolve(this._items.push(new CartItem(data, cart))).then(
-        () => {
-          this.render();
-          this._child
-            .querySelector(".cart-item-remove")
-            .addEventListener("click", this.removeItem.bind(this));
-        }
-      );
+      return Promise.resolve(this._items.push(new CartItem(data, this)));
     } else {
       duplicate[0].inc();
     }
   }
 
-  removeItem() {
-    console.log("remove");
-    
+  // очищаю корзину
+  removeAll() {
+    this._items.forEach((item) => item._child.remove());
+    this._items.splice(0, this._items.length);
+    this._sum = 0;
+    this.ifEmptyCart();
   }
-
-  removeAll() {}
 
   getTemplate() {
     this._child = document.createElement("div");
     this._child.classList.add("cart");
     this._child.innerHTML = `
-    <span class="cart_empty">Your cart is empty. Add some goodies to be happier... OMNOMNOM!!!</span>
+    <span class="cart_empty show">Your cart is&nbsp;empty. Add some goodies to&nbsp;be&nbsp;happier... OMNOMNOM!!!</span>
     <ul class="cart-items"></ul>
-    <span class="cart-sum">${this._sum}$</span>`;
+    <div class="cart-sum-wrp">
+    <span class="cart-sum">${this._sum}$</span>
+    <button class="cart-clean">DELETE ALL</button>
+    </div>`;
+    this._child
+      .querySelector(".cart-clean")
+      .addEventListener("click", this.removeAll.bind(this));
     this.render();
   }
 }
