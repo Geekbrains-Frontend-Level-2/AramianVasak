@@ -38,7 +38,7 @@ class Item extends Renderer {
     <span class="item-price">${this._data.price}$</span>
     </div>
     <img  class="item-img" src="img/${this._data.img}" alt="${this._data.name} image"/>
-    <button class="item-btn">ADD&nbsp;TO CART</button>`;
+    <button class="item-btn">ADD TO CART</button>`;
 
     this._child
       .querySelector(".item-btn")
@@ -49,37 +49,30 @@ class Item extends Renderer {
 }
 
 class CartItem extends Renderer {
-  constructor(data, cart) {
-    super();
-    this._root = cart._child.querySelector(".cart-items");
+  constructor(data, cart, root) {
+    super(root);
     this._data = data;
     this._cart = cart;
     this._amount = 1;
     this._totalPrice = data.price;
     this.getTemplate();
     this.render();
-    this.incCartSum();
+    this.incSum();
   }
 
-  // увеличение общей стоимости в корзине
-  incCartSum() {
-    const cartSum = this._cart._child.querySelector(".cart-sum");
-    this._cart._sum += this._data.price;
-    cartSum.innerText = this._cart._sum + "$";
-    this._cart.ifEmptyCart();
+  // вызов incCartSum из корзины
+  incSum() {
+    this._cart.incCartSum(this._data);
   }
 
-  // уменьшение общей стоимости в корзине
-  decCartSum() {
-    const cartSum = this._cart._child.querySelector(".cart-sum");
-    this._cart._sum -= this._data.price;
-    cartSum.innerText = this._cart._sum + "$";
-    this._cart.ifEmptyCart();
+  // вызов decCartSum из корзины
+  decSum() {
+    this._cart.decCartSum(this._data);
   }
 
   // увеличиваю кол-во товаров и стоимость позиции в корзине
   inc() {
-    this.incCartSum();
+    this.incSum();
 
     this._amount++;
     this._totalPrice = this._amount * this._data.price;
@@ -95,7 +88,7 @@ class CartItem extends Renderer {
     if (this._amount == 1) {
       this.remove();
     } else {
-      this.decCartSum();
+      this.decSum();
 
       this._amount--;
       this._totalPrice = this._amount * this._data.price;
@@ -110,11 +103,12 @@ class CartItem extends Renderer {
   // удаление позиции товара из корзины
   remove() {
     let indexOfItem;
-    for (let i = 0; i < this._cart._items.length; i++) {
-      if (this._data.id == this._cart._items[i]._data.id) {
+
+    this._cart._items.forEach((item, i) => {
+      if (item._data.id == this._data.id) {
         indexOfItem = i;
       }
-    }
+    });
 
     this._cart._items.splice(indexOfItem, 1);
     this._child.remove();
@@ -179,10 +173,30 @@ class Cart extends Renderer {
     const duplicate = this._items.filter((item) => item._data.id === data.id);
 
     if (!duplicate[0]) {
-      return Promise.resolve(this._items.push(new CartItem(data, this)));
+      return Promise.resolve(
+        this._items.push(
+          new CartItem(data, this, this._child.querySelector(".cart-items"))
+        )
+      );
     } else {
       duplicate[0].inc();
     }
+  }
+
+  // увеличение общей стоимости в корзине
+  incCartSum(data) {
+    const cartSum = this._child.querySelector(".cart-sum");
+    this._sum += data.price;
+    cartSum.innerText = this._sum + "$";
+    this.ifEmptyCart();
+  }
+
+  // уменьшение общей стоимости в корзине
+  decCartSum(data) {
+    const cartSum = this._child.querySelector(".cart-sum");
+    this._sum -= data.price;
+    cartSum.innerText = this._sum + "$";
+    this.ifEmptyCart();
   }
 
   // очищаю корзину
@@ -197,7 +211,7 @@ class Cart extends Renderer {
     this._child = document.createElement("div");
     this._child.classList.add("cart");
     this._child.innerHTML = `
-    <span class="cart_empty show">Your cart is&nbsp;empty. Add some goodies to&nbsp;be&nbsp;happier... OMNOMNOM!!!</span>
+    <span class="cart_empty show">Your cart is empty. Add some goodies to be happier... OMNOMNOM!!!</span>
     <ul class="cart-items"></ul>
     <div class="cart-sum-wrp">
     <span class="cart-sum">${this._sum}$</span>
