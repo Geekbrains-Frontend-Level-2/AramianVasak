@@ -1,7 +1,6 @@
-// import Renderer from './Renderer'
+import Renderer from './Renderer'
 
-// export default 
-class CartItem extends Renderer {
+export default class CartItem extends Renderer {
   constructor(data, cart, root) {
     super(root);
     this._data = data;

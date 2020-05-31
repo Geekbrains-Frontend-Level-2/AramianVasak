@@ -1,9 +1,8 @@
-// import Item from "./Item";
-// import cart from "./index";
-// import MAIN from "./Renderer";
+import Item from "./Item";
+import { MAIN } from "./Renderer";
+import { cart } from "./index";
 
-// export default 
-class ItemsList {
+export default class ItemsList {
   constructor() {
     this._arr = [];
     this.fetchData();

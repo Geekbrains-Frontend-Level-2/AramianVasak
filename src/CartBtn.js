@@ -1,8 +1,6 @@
-// import Renderer from './Renderer'
-// import HEADER from "./Renderer";
+import Renderer from "./Renderer";
 
-// export default
-class CartBtn extends Renderer {
+export default class CartBtn extends Renderer {
   constructor(root, cart) {
     super(root);
     this._cart = cart;

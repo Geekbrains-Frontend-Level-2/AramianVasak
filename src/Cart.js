@@ -1,9 +1,7 @@
-// import Renderer from "./Renderer";
-// import HEADER from "./Renderer";
-// import CartItem from "./CartItem";
+import Renderer from "./Renderer";
+import CartItem from "./CartItem";
 
-// export default
-class Cart extends Renderer {
+export default class Cart extends Renderer {
   constructor(root) {
     super(root);
     this._items = [];
