@@ -1,6 +1,6 @@
 import Item from "./Item";
 import { MAIN } from "./Renderer";
-import { cart } from "./index";
+import { cart } from "./main";
 
 export default class ItemsList {
   constructor() {
