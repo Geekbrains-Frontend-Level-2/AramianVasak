@@ -3,6 +3,8 @@ import { MAIN } from "./Renderer";
 import { cart } from "./main";
 
 export default class ItemsList {
+  #arr = []
+  
   constructor() {
     this._arr = [];
     this.fetchData();
